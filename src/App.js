@@ -16,6 +16,8 @@ class App extends Component {
     recettes: {}
   }
 
+  //Cycles de vie react
+
   componentDidMount() {
     this.ref = base.syncState(`/${this.state.pseudo}/recettes`, {
       context: this, //synchronise le state
@@ -27,6 +29,12 @@ class App extends Component {
     base.removeBinding(this.ref) //on supprime le syncState
   }
 
+  ajouterRecette = recette => {
+    const recettes = { ...this.state.recettes } //on copie le state recettes
+    recettes[`recette-${Date.now()}`] = recette //la recette concernée est donné une clé unique (Date.now())
+    this.setState({ recettes })
+  }
+
   chargerExemple = () => this.setState({ recettes })
   
   render () {
@@ -36,12 +44,12 @@ class App extends Component {
     return (
       <div className='box'>
         <Header pseudo={ this.state.pseudo }/>
-        <div className='cards'>
-          <div className='card'>
+        
+          <div className='cards'>
             { cards }
           </div>
-        </div>
         <Admin
+          ajouterRecette={ this.ajouterRecette }
           chargerExemple={ this.chargerExemple }></Admin>
       </div>
     )
