@@ -1,3 +1,16 @@
+Pour configurer le cloud Firebase, aller dans la realtime database puis créez la db qui sera connectée à votre projet et allez dans rules, remplacez :
+
+{
+  "rules": {
+    ".read": true,  // tout le monde peut lire
+    ".write": "!data.exists()", 
+    "$box" : {
+    	".write" : "auth != null && (!data.exists() || data.child('chef').val() === auth.uid)",
+      ".read": true
+    }
+  }
+}
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
