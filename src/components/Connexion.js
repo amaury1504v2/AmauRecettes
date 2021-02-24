@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
+
+import withPlaceholder from '../hoc/withPlaceholder'
 
 class Connexion extends React.Component {
   state = {
@@ -24,22 +26,28 @@ class Connexion extends React.Component {
     }
 
     return (
-      <div className='connexionBox'>
-        <form className='connexion' onSubmit={this.goToApp} >
-          <h1>Ma Boîte à Recettes</h1>
-          <input
-            type='text'
-            value={this.state.pseudo} //on stocke la valeur dans le pseudo
-            onChange={this.handleChange} //on effectue le changement
-            placeholder='Nom du Chef'
-            pattern='[A-Za-z-]{1,}'
-            required />
-          <button type='submit'>GO</button>
-          <p>Pas de caractères spéciaux.</p>
-        </form>
-      </div>
+      <Fragment> 
+        {/* les fragments se placent autour et permettent d'englober deux éléments adjacents 
+        sans qu'il y ait de conflits. Fragment n'apparait pas dans le DOM */}
+        <div className='connexionBox'>
+          <form className='connexion' onSubmit={this.goToApp} >
+            <h1>Ma Boîte à Recettes</h1>
+            <input
+              type='text'
+              value={this.state.pseudo} //on stocke la valeur dans le pseudo
+              onChange={this.handleChange} //on effectue le changement
+              placeholder={ this.props.placeholder }
+              pattern='[A-Za-z-]{1,}'
+              required />
+            <button type='submit'>GO</button>
+            <p>Pas de caractères spéciaux.</p>
+          </form>
+        </div>
+      </Fragment>
     )
   }
 }
 
-export default Connexion
+const wrappedComponent = withPlaceholder(Connexion)
+
+export default wrappedComponent

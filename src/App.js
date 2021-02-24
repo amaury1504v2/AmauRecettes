@@ -3,72 +3,38 @@ import React, { Component } from 'react'
 import './App.css'
 
 import Header from './components/Header'
-import recettes from './recettes'
 import Admin from './components/Admin'
 import Card from './components/Card'
+
+import withFirebase from './hoc/withFirebase'
 
 //Firebase
 import base from './base'
 
-class App extends Component {
-  state = {
-    pseudo: this.props.match.params.pseudo,
-    recettes: {}
-  }
-
-  //Cycles de vie react
-
-  componentDidMount() {
-    this.ref = base.syncState(`/${this.state.pseudo}/recettes`, {
-      context: this, //synchronise le state
-      state: 'recettes' //syncronise les recettes
-    })
-  }
-
-  componentWillUnmount() {
-    base.removeBinding(this.ref) //on supprime le syncState
-  }
-
-  ajouterRecette = recette => {
-    const recettes = { ...this.state.recettes } //on copie le state recettes
-    recettes[`recette-${Date.now()}`] = recette //la recette concernée est donné une clé unique (Date.now())
-    this.setState({ recettes })
-  }
-
-  majRecette = (key, newRecette) => {
-    const recettes = { ...this.state.recettes } //on copie le state recettes
-    recettes[key] = newRecette // on met à jour la clé ?
-    this.setState({ recettes })
-  }
-
-  supprimerRecette = key => {
-    const recettes = { ...this.state.recettes }
-    recettes[key] = null
-    this.setState({ recettes })
-  }
-
-  chargerExemple = () => this.setState({ recettes })
-  
-  render () {
-    const cards = Object.keys(this.state.recettes)
-    .map(key => <Card key={ key } details={ this.state.recettes[key] }/>) //parcourt chaque recette par clés
+const App = ({ recettes, ajouterRecette, majRecette, supprimerRecette, chargerExemple, match }) => {
+  console.log('render');
+    const cards = Object.keys( recettes) //on change state à props
+    .map(key => <Card key={ key } details={ recettes[key] }/>) //parcourt chaque recette par clés
     console.log(cards);
     return (
       <div className='box'>
-        <Header pseudo={ this.state.pseudo }/>
+        <Header pseudo={ match.params.pseudo }/>
         
           <div className='cards'>
             { cards }
           </div>
         <Admin
-          recettes={ this.state.recettes }
-          ajouterRecette={ this.ajouterRecette }
-          majRecette={ this.majRecette }
-          supprimerRecette={ this.supprimerRecette }
-          chargerExemple={ this.chargerExemple }></Admin>
+          recettes={ recettes }
+          ajouterRecette={ ajouterRecette }
+          majRecette={ majRecette }
+          supprimerRecette={ supprimerRecette }
+          chargerExemple={ chargerExemple }
+          pseudo={ match.params.pseudo} /> 
+          {/* On ajoute props parce que les props sont dans le HOC */}
       </div>
     )
-  }
 }
 
-export default App
+const wrappedComponent = withFirebase(App)
+
+export default wrappedComponent
