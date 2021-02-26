@@ -1,5 +1,6 @@
 //rafce
 import React from 'react'
+import { ColorContext } from './Color'
 
 const Card = ({ details }) => {
     const ingredients = details.ingredients 
@@ -20,19 +21,24 @@ const Card = ({ details }) => {
         }
     }
     return (
-        <div className="card">
-            <div className="image">
-                <img src={requireImage(details.image)} alt={details.nom}/> 
-                {/* permet de récupérer une image via le lien qui redirige vers son dossier */}
+        //rebellote le contexte
+        <ColorContext.Consumer> 
+            {context => (
+                <div className="card" style={{ backgroundColor: context.state.color }}>
+                <div className="image">
+                    <img src={requireImage(details.image)} alt={details.nom}/> 
+                    {/* permet de récupérer une image via le lien qui redirige vers son dossier */}
+                </div>
+                <h2>{ details.nom }</h2>
+                <ul className="liste-ingrédients">
+                    { ingredients }
+                </ul>
+                <ol className="liste-instructions">
+                    { instructions }
+                </ol>
             </div>
-            <h2>{ details.nom }</h2>
-            <ul className="liste-ingrédients">
-                { ingredients }
-            </ul>
-            <ol className="liste-instructions">
-                { instructions }
-            </ol>
-        </div>
+            )}
+        </ColorContext.Consumer>
     )
 }
 
